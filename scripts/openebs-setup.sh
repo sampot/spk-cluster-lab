@@ -4,7 +4,7 @@ main() {
   echo "[TASK] Create cStor storage pool: cstor-disk-pool"
   create_cstor_storage_pool
 
-  echo "[TASK] Create cstor srogae classes: openebs-cstore-replicated, openebs-cstore-single"
+  echo "[TASK] Create cstor srogae classes: openebs-replicated, openebs-single"
   create_cstor_storage_classes
 }
 
