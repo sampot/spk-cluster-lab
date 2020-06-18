@@ -13,11 +13,13 @@ kubectl apply -f /vagrant/add-ons/metrics-server
 
 ## Deploy Dashboard UI
 
-Then, deploy dashboard UI.
+Then, deploy dashboard UI:
 
 ```sh
 kubectl apply -f /vagrant/add-ons/dashboard
 ```
+
+This also deploys a user 'admin-user' which assumes the role `cluster-admin`.
 
 ## Get a Bear Token
 

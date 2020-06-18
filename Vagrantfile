@@ -41,12 +41,17 @@ Vagrant.configure(2) do |config|
     config.vm.define "spkmaster-#{i}" do |masternode|
       masternode.vm.box = BASE_BOX
       masternode.vm.box_version = BOX_VERSION
+      masternode.vm.synced_folder ".", "/vagrant"
       masternode.vm.hostname = "spkmaster-#{i}"
       # masternode.vm.synced_folder ".", "/vagrant"
       masternode.vm.network "private_network", ip: "#{LAB_NETWORK}.#{10+i}"
       # expose first master node's API endpoint
       masternode.vm.provider "virtualbox" do |v|
         v.name = "spkmaster-#{i}"
+        v.memory = MASTER_MEMORY
+        v.cpus = MASTER_CPUS
+      end
+      masternode.vm.provider "libvirt" do |v|
         v.memory = MASTER_MEMORY
         v.cpus = MASTER_CPUS
       end
@@ -65,6 +70,7 @@ Vagrant.configure(2) do |config|
     config.vm.define "spkworker-#{i}" do |workernode|
       workernode.vm.box = BASE_BOX
       workernode.vm.box_version = BOX_VERSION
+      workernode.vm.synced_folder ".", "/vagrant"
       workernode.vm.hostname = hostname
       workernode.vm.network "private_network", ip: "#{LAB_NETWORK}.#{100+i}"
       workernode.vm.provider "virtualbox" do |v|
@@ -73,12 +79,21 @@ Vagrant.configure(2) do |config|
         v.cpus = WORKER_CPUS
 
         if WORKER_EXTRA_DISK
-          # attach an extra disk
+          # attach an extra disk /dev/sdb
           file_to_disk = "./.kube/#{hostname}-disk.vdi"
           unless File.exist?(file_to_disk)
             v.customize ['createhd', '--filename', file_to_disk, '--size', WORKER_EXTRA_DISK_SIZE * 1024]
           end
           v.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', file_to_disk]
+        end
+      end
+      workernode.vm.provider "libvirt" do |v|
+        v.memory = WORKER_MEMORY
+        v.cpus = WORKER_CPUS
+
+        if WORKER_EXTRA_DISK
+          # attach an extra disk /dev/vdb
+          v.storage :file, :size => '#{WORKER_EXTRA_DISK_SIZE}G'
         end
       end
       workernode.vm.provision "shell" do |s|
