@@ -41,19 +41,19 @@ done
 
 # OpenEBS images
 declare -a openebs_images=(
-  "openebs-m-exporter:1.10.0.tar"
-  "openebs-m-apiserver:1.10.0.tar"
-  "openebs-node-disk-manager:0.5.0.tar"
-  "openebs-node-disk-operator:0.5.0.tar"
-  "openebs-snapshot-controller:1.10.0.tar"
-  "openebs-snapshot-provisioner:1.10.0.tar"
-  "openebs-admission-server:1.10.0.tar"
-  "openebs-cstor-istgt:1.10.0.tar"
-  "openebs-cstor-volume-mgmt:1.10.0.tar"
-  "openebs-cstor-pool-mgmt:1.10.0.tar"
-  "openebs-cstor-pool:1.10.0.tar"
-  "openebs-provisioner-localpv:1.10.0.tar"
-  "openebs-k8s-provisioner:1.10.0.tar"
+  "openebs-m-exporter-1.10.0.tar"
+  "openebs-m-apiserver-1.10.0.tar"
+  "openebs-node-disk-manager-0.5.0.tar"
+  "openebs-node-disk-operator-0.5.0.tar"
+  "openebs-snapshot-controller-1.10.0.tar"
+  "openebs-snapshot-provisioner-1.10.0.tar"
+  "openebs-admission-server-1.10.0.tar"
+  "openebs-cstor-istgt-1.10.0.tar"
+  "openebs-cstor-volume-mgmt-1.10.0.tar"
+  "openebs-cstor-pool-mgmt-1.10.0.tar"
+  "openebs-cstor-pool-1.10.0.tar"
+  "openebs-provisioner-localpv-1.10.0.tar"
+  "openebs-k8s-provisioner-1.10.0.tar"
 )
 
 for img in "${openebs_images[@]}"

@@ -125,14 +125,14 @@ preload_docker_images() {
   echo "[TASK] Import docker images if exist"
   # K8S
   declare -a kube_images=(
-    "kube-apiserver:v1.18.3.tar"
-    "kube-proxy:v1.18.3.tar"
-    "kube-controller-manager:v1.18.3.tar"
-    "openebs-node-disk-manager:0.5.0.tar"
-    "kube-scheduler:v1.18.3.tar"
-    "pause:3.2.tar"
-    "etcd:3.4.3-0.tar"
-    "coredns:1.6.7.tar"
+    "kube-apiserver-v1.18.3.tar"
+    "kube-proxy-v1.18.3.tar"
+    "kube-controller-manager-v1.18.3.tar"
+    "openebs-node-disk-manager-0.5.0.tar"
+    "kube-scheduler-v1.18.3.tar"
+    "pause-3.2.tar"
+    "etcd-3.4.3-0.tar"
+    "coredns-1.6.7.tar"
   )
 
   for img in "${kube_images[@]}"
@@ -144,10 +144,10 @@ preload_docker_images() {
 
   # Calico
   declare -a calico_images=(
-    "calico-node:v3.14.1.tar"
-    "calico-pod2daemon-flexvol:v3.14.1.tar"
-    "calico-kube-controllers:v3.14.1.tar"
-    "calico-cni:v3.14.1.tar"
+    "calico-node-v3.14.1.tar"
+    "calico-pod2daemon-flexvol-v3.14.1.tar"
+    "calico-kube-controllers-v3.14.1.tar"
+    "calico-cni-v3.14.1.tar"
   )
 
   for img in "${calico_images[@]}"

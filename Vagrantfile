@@ -41,7 +41,7 @@ Vagrant.configure(2) do |config|
     config.vm.define "spkmaster-#{i}" do |masternode|
       masternode.vm.box = BASE_BOX
       masternode.vm.box_version = BOX_VERSION
-      masternode.vm.synced_folder ".", "/vagrant"
+      #masternode.vm.synced_folder ".", "/vagrant"
       masternode.vm.hostname = "spkmaster-#{i}"
       # masternode.vm.synced_folder ".", "/vagrant"
       masternode.vm.network "private_network", ip: "#{LAB_NETWORK}.#{10+i}"
@@ -54,6 +54,10 @@ Vagrant.configure(2) do |config|
       masternode.vm.provider "libvirt" do |v|
         v.memory = MASTER_MEMORY
         v.cpus = MASTER_CPUS
+      end
+      masternode.vm.provider "vmware_fusion" do |v|
+        v.vmx["memsize"] = MASTER_MEMORY
+        v.vmx["numvcpus"] = MASTER_CPUS
       end
       masternode.vm.provision "shell" do |s|
         s.inline = <<-SCRIPT
@@ -70,7 +74,7 @@ Vagrant.configure(2) do |config|
     config.vm.define "spkworker-#{i}" do |workernode|
       workernode.vm.box = BASE_BOX
       workernode.vm.box_version = BOX_VERSION
-      workernode.vm.synced_folder ".", "/vagrant"
+      #workernode.vm.synced_folder ".", "/vagrant"
       workernode.vm.hostname = hostname
       workernode.vm.network "private_network", ip: "#{LAB_NETWORK}.#{100+i}"
       workernode.vm.provider "virtualbox" do |v|
@@ -94,6 +98,32 @@ Vagrant.configure(2) do |config|
         if WORKER_EXTRA_DISK
           # attach an extra disk /dev/vdb
           v.storage :file, :size => '#{WORKER_EXTRA_DISK_SIZE}G'
+        end
+      end
+      workernode.vm.provider "vmware_fusion" do |v|
+        v.vmx["memsize"] = WORKER_MEMORY
+        v.vmx["numvcpus"] = WORKER_CPUS
+        if WORKER_EXTRA_DISK
+            # c.f. https://gist.github.com/jtopper/8588263
+            vdiskmanager = '/Applications/VMware\ Fusion.app/Contents/Library/vmware-vdiskmanager'
+            dir = "#{ENV['PWD']}/.kube"
+
+            unless File.directory?( dir )
+                Dir.mkdir dir
+            end
+
+            file_to_disk = "#{dir}/#{hostname}-disk.vmdk"
+            if ARGV[0] == "up"
+              unless File.exists?( file_to_disk )
+                `#{vdiskmanager} -c  -s #{WORKER_EXTRA_DISK_SIZE}GB -a lsilogic -t 0 #{file_to_disk}`
+              end
+            elsif ARGV[0] == "destroy"
+                `rm -f #{file_to_disk}`
+            end
+
+            v.vmx['scsi0:1.filename'] = file_to_disk
+            v.vmx['scsi0:1.present']  = 'TRUE'
+            #v.vmx['scsi0:1.redo']     = ''
         end
       end
       workernode.vm.provision "shell" do |s|
